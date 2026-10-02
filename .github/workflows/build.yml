@@ -37,14 +37,26 @@ jobs:
       - name: Test fullscreen foundation
         shell: pwsh
         run: |
-          $testProject = "./source/Tests/Playnite.FullscreenApp.Tests/Playnite.FullscreenApp.Tests.csproj"
+          $testProject = Join-Path $env:GITHUB_WORKSPACE "source\Tests\Playnite.FullscreenApp.Tests\Playnite.FullscreenApp.Tests.csproj"
           dotnet restore $testProject
-          dotnet test $testProject `
-            --no-restore `
-            --configuration Release `
-            --runtime win-x86 `
-            --logger "trx;LogFileName=capsule-fullscreen-tests.trx"
+          if ($LASTEXITCODE -ne 0) { throw "Test restore failed." }
 
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\Installer\vswhere.exe"
+          $msbuild = (& $vswhere -latest -products * -requires Microsoft.Component.MSBuild -find "MSBuild\**\Bin\MSBuild.exe" | Select-Object -First 1)
+          if ([string]::IsNullOrWhiteSpace($msbuild)) { throw "MSBuild not found." }
+
+          & $msbuild $testProject /p:Configuration=Release /p:Platform=x86 /m
+          if ($LASTEXITCODE -ne 0) { throw "Test project build failed." }
+
+          $testAssembly = Get-ChildItem (Join-Path $env:GITHUB_WORKSPACE "source\Tests\Playnite.FullscreenApp.Tests\bin") -Filter "Playnite.FullscreenApp.Tests.dll" -Recurse |
+            Sort-Object LastWriteTime -Descending | Select-Object -First 1
+          if ($null -eq $testAssembly) { throw "Test assembly not found." }
+
+          $vstest = (& $vswhere -latest -products * -find "Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" | Select-Object -First 1)
+          if ([string]::IsNullOrWhiteSpace($vstest)) { throw "VSTest Console not found." }
+
+          & $vstest $testAssembly.FullName /Platform:x86 /Logger:"trx;LogFileName=capsule-fullscreen-tests.trx"
+          if ($LASTEXITCODE -ne 0) { throw "Fullscreen tests failed." }
       - name: Build portable package
         shell: pwsh
         run: |
