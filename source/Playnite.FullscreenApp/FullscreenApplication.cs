@@ -26,6 +26,7 @@ using System.Windows.Input;
 using static SDL2.SDL;
 using Playnite.Controls;
 using Playnite.FullscreenApp.Controls;
+using Playnite.FullscreenApp.Capsule.Infrastructure.Integrations;
 
 namespace Playnite.FullscreenApp
 {
@@ -43,6 +44,8 @@ namespace Playnite.FullscreenApp
                 MainModelBase = value;
             }
         }
+
+        public CapsuleLibraryIntegrationRegistry LibraryIntegrations { get; private set; }
 
         private SplashScreen splashScreen;
         private bool sdlInitialized = false;
@@ -116,6 +119,7 @@ namespace Playnite.FullscreenApp
             Database.SetAsSingletonInstance();
             Controllers = new GameControllerFactory(Database);
             Extensions = new ExtensionFactory(Database, Controllers, GetApiInstance);
+            LibraryIntegrations = new CapsuleLibraryIntegrationRegistry(Extensions);
             GamesEditor = new GamesEditor(
                 Database,
                 Controllers,
