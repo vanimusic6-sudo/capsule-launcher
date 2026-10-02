@@ -101,3 +101,16 @@ A Capsule updater/backend is a separate milestone. Never point a Capsule release
 7. return to the same selected game after exit.
 
 Only then expand into deeper store-specific UX, social surfaces, achievements or large settings work.
+
+
+## Inherited dependency debt
+
+The first clean CI pass reports security advisories on inherited Playnite 10 dependencies, including AngleSharp 0.9.9, LiteDB 4.1.4 and Newtonsoft.Json 10.0.3.
+
+Do not mass-upgrade these during UI work.
+
+- LiteDB is part of persistence/database behavior. Any version migration must be tested against copied real libraries and rollback cases.
+- Newtonsoft.Json is used broadly enough that a major jump needs serialization compatibility tests.
+- Browser/HTML dependencies should be upgraded in an isolated security branch with startup, metadata, description and plugin regression checks.
+
+Treat these advisories as tracked inherited debt, not as a reason to destabilize the foundation before the Capsule presentation layer is separated.
