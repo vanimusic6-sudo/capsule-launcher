@@ -65,6 +65,7 @@ namespace Playnite.FullscreenApp.ViewModels
 
             capsuleReturnGameId = null;
             capsuleReturnPointCaptured = false;
+            CompleteCapsuleLaunchTransition();
             CapsuleGameSession.CompleteReturn();
         }
     }

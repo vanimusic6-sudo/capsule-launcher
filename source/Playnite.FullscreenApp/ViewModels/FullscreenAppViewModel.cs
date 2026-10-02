@@ -179,6 +179,7 @@ namespace Playnite.FullscreenApp.ViewModels
                 selectedGame = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(GameDetailsButtonVisible));
+                NotifyCapsuleSelectionChanged();
 
                 if (!IsDisposing)
                 {

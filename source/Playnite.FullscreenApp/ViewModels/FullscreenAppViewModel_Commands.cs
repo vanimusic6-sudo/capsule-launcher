@@ -235,17 +235,17 @@ namespace Playnite.FullscreenApp.ViewModels
                 ActiveFilterPreset = null;
             });
 
-            ActivateSelectedCommand = new RelayCommand<object>((a) =>
+            ActivateSelectedCommand = new RelayCommand<object>(async (a) =>
             {
                 if (SelectedGame?.IsInstalled == true)
                 {
-                    GamesEditor.PlayGame(SelectedGame.Game, true);
+                    await PlaySelectedWithCapsuleTransitionAsync();
                 }
                 else if (SelectedGame?.IsInstalled == false)
                 {
                     GamesEditor.InstallGame(SelectedGame.Game);
                 }
-            }, (a) => Database?.IsOpen == true);
+            }, (a) => Database?.IsOpen == true && !CapsuleLaunchTransitionActive);
 
             OpenSearchCommand = new RelayCommand<object>((a) =>
             {

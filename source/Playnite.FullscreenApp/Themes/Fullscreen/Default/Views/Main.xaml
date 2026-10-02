@@ -1,229 +1,341 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     mc:Ignorable="d">
+
+    <Style x:Key="CapsuleHeroPrimaryButton" TargetType="ButtonEx">
+        <Setter Property="Height" Value="86" />
+        <Setter Property="MinWidth" Value="555" />
+        <Setter Property="Background" Value="#F5F5F5" />
+        <Setter Property="Foreground" Value="#151515" />
+        <Setter Property="BorderBrush" Value="#00FFFFFF" />
+        <Setter Property="BorderThickness" Value="3" />
+        <Setter Property="FontSize" Value="31" />
+        <Setter Property="FontFamily" Value="{DynamicResource FontTitilliumWeb}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ButtonEx">
+                    <Border x:Name="Chrome"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="13"
+                            RenderTransformOrigin="0.5,0.5">
+                        <Border.RenderTransform>
+                            <ScaleTransform x:Name="ButtonScale" ScaleX="1" ScaleY="1" />
+                        </Border.RenderTransform>
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          RecognizesAccessKey="True" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="#FFFFFFFF" />
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ButtonScale"
+                                                         Storyboard.TargetProperty="ScaleX"
+                                                         To="1.025" Duration="0:0:0.12">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="ButtonScale"
+                                                         Storyboard.TargetProperty="ScaleY"
+                                                         To="1.025" Duration="0:0:0.12">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ButtonScale"
+                                                         Storyboard.TargetProperty="ScaleX"
+                                                         To="1" Duration="0:0:0.16">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="ButtonScale"
+                                                         Storyboard.TargetProperty="ScaleY"
+                                                         To="1" Duration="0:0:0.16">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="CapsuleHeroMoreButton" TargetType="ButtonEx">
+        <Setter Property="Height" Value="86" />
+        <Setter Property="Width" Value="108" />
+        <Setter Property="Background" Value="#591B1B1B" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="BorderBrush" Value="#80FFFFFF" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="FontSize" Value="39" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ButtonEx">
+                    <Border x:Name="Chrome"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="13">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="Chrome" Property="Background" Value="#8C222222" />
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="White" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <Style TargetType="{x:Type Main}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Main}">
                     <Grid x:Name="PART_MainHost"
-                          d:DesignWidth="{StaticResource DesignWidth}"
-                          d:DesignHeight="{StaticResource DesignHeight}"
+                          Background="#0D1012"
+                          d:DesignWidth="1920"
+                          d:DesignHeight="1080"
                           d:DataContext="{x:Static DesignMainViewModel.DesignIntance}">
-                        <Grid x:Name="PART_ViewHost" Background="{DynamicResource MainBackgourndBrush}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
 
-                            <FadeImage x:Name="PART_ImageBackground" Grid.RowSpan="3"
-                                       HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                        <Grid x:Name="PART_ViewHost"
+                              Background="#0D1012"
+                              ClipToBounds="True">
 
-                            <Grid Grid.Row="0" Background="{DynamicResource TopBarBackgroundBrush}"
-                                  Height="110">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="100" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="100" />
-                                </Grid.ColumnDefinitions>
+                            <!-- Full-bleed selected-game artwork. -->
+                            <FadeImage x:Name="PART_ImageBackground"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch" />
 
-                                <FilterPresetSelector x:Name="PART_FilterPresetSelector" Grid.Column="1" Margin="0,0,50,0" />
+                            <!-- Functional readability masks only; no decorative glow layers. -->
+                            <Rectangle Fill="#23000000" IsHitTestVisible="False" />
+                            <Rectangle IsHitTestVisible="False">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                        <GradientStop Color="#D9000000" Offset="0" />
+                                        <GradientStop Color="#A8000000" Offset="0.28" />
+                                        <GradientStop Color="#28000000" Offset="0.58" />
+                                        <GradientStop Color="#00000000" Offset="0.79" />
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <Rectangle IsHitTestVisible="False">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush StartPoint="0.5,1" EndPoint="0.5,0">
+                                        <GradientStop Color="#B8000000" Offset="0" />
+                                        <GradientStop Color="#58000000" Offset="0.28" />
+                                        <GradientStop Color="#00000000" Offset="0.58" />
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
 
-                                <ContentControl x:Name="PART_ElemBatteryStatus" Focusable="False" FontSize="42"
-                                            VerticalAlignment="Center" Margin="10,0,10,0"
-                                            Grid.Column="2">
-                                    <ContentControl.Style>
-                                        <Style TargetType="ContentControl">
-                                            <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding PowerStatus.Charge}" Value="Critical">
-                                                    <Setter Property="Content" Value="{DynamicResource BatteryStatusCritical}" />
-                                                    <Setter Property="Foreground" Value="Red" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding PowerStatus.Charge}" Value="Low">
-                                                    <Setter Property="Content" Value="{DynamicResource BatteryStatusLow}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding PowerStatus.Charge}" Value="Medium">
-                                                    <Setter Property="Content" Value="{DynamicResource BatteryStatusMedium}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding PowerStatus.Charge}" Value="High">
-                                                    <Setter Property="Content" Value="{DynamicResource BatteryStatusHigh}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding PowerStatus.IsCharging}" Value="True">
-                                                    <Setter Property="Content" Value="{DynamicResource BatteryStatusCharging}" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ContentControl.Style>
-                                </ContentControl>
+                            <!-- Design surface keeps the console geometry consistent at 16:9 resolutions. -->
+                            <Viewbox Stretch="Fill">
+                                <Grid Width="1920" Height="1080">
 
-                                <TextBlock x:Name="PART_TextBatteryPercentage" Style="{DynamicResource TextBlockBaseStyle}"
-                                       VerticalAlignment="Center" Margin="0,0,20,0"
-                                       Grid.Column="3"/>
+                                    <!-- Top-right system area. -->
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Top"
+                                                Margin="0,34,68,0">
+                                        <TextBlock x:Name="PART_TextClock"
+                                                   Margin="0,0,28,0"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="White"
+                                                   FontFamily="{DynamicResource FontTitilliumWeb}"
+                                                   FontSize="29" />
+                                        <ButtonEx x:Name="PART_ButtonMainMenu"
+                                                  Width="54" Height="54"
+                                                  Background="Transparent"
+                                                  BorderThickness="0"
+                                                  FocusVisualStyle="{x:Null}">
+                                            <ButtonEx.Template>
+                                                <ControlTemplate TargetType="ButtonEx">
+                                                    <Grid>
+                                                        <TextBlock Text="⚙"
+                                                                   FontFamily="Segoe UI Symbol"
+                                                                   FontSize="34"
+                                                                   Foreground="White"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center" />
+                                                        <Border x:Name="FocusRing"
+                                                                BorderBrush="White"
+                                                                BorderThickness="2"
+                                                                CornerRadius="27"
+                                                                Opacity="0" />
+                                                    </Grid>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsFocused" Value="True">
+                                                            <Setter TargetName="FocusRing" Property="Opacity" Value="0.72" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </ButtonEx.Template>
+                                        </ButtonEx>
+                                    </StackPanel>
 
-                                <TextBlock x:Name="PART_TextClock" Style="{DynamicResource TextBlockBaseStyle}"
-                                       VerticalAlignment="Center" Margin="20,0,20,0"
-                                       Grid.Column="4"/>
+                                    <!-- Capsule shelf. The selected card grows downward from this row. -->
+                                    <ListBoxEx x:Name="PART_ListGameItems"
+                                               Width="1710"
+                                               Height="370"
+                                               Margin="105,80,0,0"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Top"
+                                               Background="Transparent"
+                                               BorderThickness="0"
+                                               ClipToBounds="False"
+                                               ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                               ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                               KeyboardNavigation.DirectionalNavigation="Once"
+                                               Panel.ZIndex="20" />
 
-                                <ButtonEx x:Name="PART_ButtonProgramUpdate" VerticalAlignment="Center"
-                                          Margin="10,0,10,0" Height="48" MinWidth="48"
-                                          Style="{DynamicResource ButtonTopMenu}"                                          
-                                          Grid.Column="5">
-                                    <ButtonEx.Content>
-                                        <TextBlock Text="&#xef08;" FontFamily="{StaticResource FontIcoFont}"                                                   
-                                                   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2"
-                                                   Foreground="{DynamicResource GlyphLightBrush}" FontSize="30" />
-                                    </ButtonEx.Content>
-                                </ButtonEx>
+                                    <!-- Selected-game hero. -->
+                                    <Grid x:Name="PART_CapsuleHero"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Bottom"
+                                          Margin="125,0,0,96"
+                                          Width="780"
+                                          Panel.ZIndex="12">
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Setter Property="Opacity" Value="1" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding CapsuleLaunchTransitionActive}" Value="True">
+                                                        <Setter Property="Opacity" Value="0" />
+                                                        <DataTrigger.EnterActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                                     To="0"
+                                                                                     Duration="0:0:0.14" />
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </DataTrigger.EnterActions>
+                                                        <DataTrigger.ExitActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                                     To="1"
+                                                                                     Duration="0:0:0.24">
+                                                                        <DoubleAnimation.EasingFunction>
+                                                                            <CubicEase EasingMode="EaseOut" />
+                                                                        </DoubleAnimation.EasingFunction>
+                                                                    </DoubleAnimation>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </DataTrigger.ExitActions>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
 
-                                <ButtonEx x:Name="PART_ButtonNotifications" VerticalAlignment="Center"
-                                          Margin="10,0,10,0" Height="48" MinWidth="48"
-                                          Grid.Column="6">
-                                    <Button.Content>
-                                        <Grid>
-                                            <TextBlock Text="&#xeea3;" FontFamily="{StaticResource FontIcoFont}"
-                                                       HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2"
-                                                       Foreground="White" FontSize="30" />
-                                            <TextBlock Text="&#x25CF;" Foreground="{DynamicResource GlyphBrush}"
-                                                       HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                                       FontSize="24" Margin="0,0,5,0" />
-                                        </Grid>
-                                    </Button.Content>
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource ButtonTopMenu}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Api Notifications.Count}" Value="0">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </ButtonEx>
+                                        <StackPanel x:Name="PART_CapsuleHeroContent"
+                                                    RenderTransformOrigin="0,0.5">
+                                            <StackPanel.RenderTransform>
+                                                <TranslateTransform X="0" />
+                                            </StackPanel.RenderTransform>
 
-                                <ButtonEx x:Name="PART_ButtonMainMenu" VerticalAlignment="Center"
-                                          Style="{DynamicResource ButtonTopMenu}"
-                                          Margin="10,0,10,0" Height="48" MinWidth="48"
-                                          Grid.Column="7">
-                                    <Button.Content>
-                                        <Image RenderOptions.BitmapScalingMode="Fant" Margin="2"
-                                           Source="{ThemeFile 'Images/applogo_clean.png'}" />
-                                    </Button.Content>
-                                </ButtonEx>
-                            </Grid>
+                                            <TextBlock Text="{Binding SelectedGame.DisplayName}"
+                                                       Foreground="White"
+                                                       FontFamily="{DynamicResource FontTitilliumWebBold}"
+                                                       FontSize="76"
+                                                       FontWeight="SemiBold"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       MaxWidth="780" />
 
-                            <DockPanel Grid.Row="1">
-                                <Filters x:Name="PART_ElemFilters"
-                                         DockPanel.Dock="Left" Focusable="False" />
+                                            <TextBlock Text="{Binding CapsuleSelectedGameDescription}"
+                                                       Margin="3,8,0,0"
+                                                       Width="690"
+                                                       MaxHeight="82"
+                                                       Foreground="#E8FFFFFF"
+                                                       FontFamily="{DynamicResource FontTitilliumWeb}"
+                                                       FontSize="27"
+                                                       LineHeight="34"
+                                                       TextWrapping="Wrap"
+                                                       TextTrimming="CharacterEllipsis" />
 
-                                <FiltersAdditional x:Name="PART_ElemFiltersAdditional"
-                                                   DockPanel.Dock="Left" Focusable="False" />
+                                            <TextBlock Text="{Binding CapsuleSelectedGameGenres}"
+                                                       Margin="3,24,0,0"
+                                                       Width="700"
+                                                       Foreground="#AFFFFFFF"
+                                                       FontFamily="{DynamicResource FontTitilliumWeb}"
+                                                       FontSize="23"
+                                                       TextTrimming="CharacterEllipsis" />
 
-                                <ContentControl x:Name="PART_ContentFilterItems"
-                                            DockPanel.Dock="Left" Focusable="False" />
+                                            <StackPanel Orientation="Horizontal" Margin="0,43,0,0">
+                                                <Grid Width="555" Height="86">
+                                                    <ButtonEx x:Name="PART_ButtonInstall"
+                                                              Style="{StaticResource CapsuleHeroPrimaryButton}"
+                                                              Content="{DynamicResource LOCInstallGame}" />
+                                                    <ButtonEx x:Name="PART_ButtonPlay"
+                                                              Style="{StaticResource CapsuleHeroPrimaryButton}"
+                                                              Content="{DynamicResource LOCPlayGame}" />
+                                                </Grid>
 
-                                <ListBoxEx x:Name="PART_ListGameItems" Margin="25,0,25,0"
-                                           Background="Transparent" BorderThickness="0"
-                                           DockPanel.Dock="Right"
-                                           KeyboardNavigation.DirectionalNavigation="Once" />
-                            </DockPanel>
+                                                <ButtonEx x:Name="PART_ButtonGameOptions"
+                                                          Margin="20,0,0,0"
+                                                          Style="{StaticResource CapsuleHeroMoreButton}"
+                                                          Content="•••" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
 
-                            <TextBlock Grid.Row="1" FontSize="40"
-                                       Text="{DynamicResource LOCNoGamesFound}"
-                                       TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockBaseStyle}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Items.Count, ElementName=PART_ListGameItems}" Value="0">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-
-                            <Grid Grid.Row="2" Background="{DynamicResource TopBarBackgroundBrush}"
-                              Height="100">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="100" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="100" />
-                                </Grid.ColumnDefinitions>
-
-                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <!--Install-->
-                                    <ButtonEx x:Name="PART_ButtonInstall"
-                                              Style="{DynamicResource ButtonBottomMenu}"
-                                              Content="{DynamicResource LOCInstallGame}" />
-                                    <!--Play-->
-                                    <ButtonEx x:Name="PART_ButtonPlay"
-                                              Style="{DynamicResource ButtonBottomMenu}"
-                                              Content="{DynamicResource LOCPlayGame}" />
-                                    <!--Details-->
-                                    <ButtonEx x:Name="PART_ButtonDetails"
-                                              Style="{DynamicResource ButtonBottomMenu}"
-                                              Content="{DynamicResource LOCGameDetails}" />
-                                    <!--Options-->
-                                    <ButtonEx x:Name="PART_ButtonGameOptions"
-                                              Style="{DynamicResource ButtonBottomMenu}"
-                                              Content="{DynamicResource LOCGameOptions}" />
-                                    <!--Search-->
-                                    <ButtonEx x:Name="PART_ButtonSearch"
-                                              Style="{DynamicResource ButtonBottomMenu}"
-                                              Content="{DynamicResource LOCSearchLabel}" />
-                                    <!--Filter-->
-                                    <ButtonEx x:Name="PART_ButtonFilter"
-                                              Style="{DynamicResource ButtonBottomMenu}"
-                                              Content="{DynamicResource LOCFilter}" />
-                                </StackPanel>
-
-                                <StackPanel Grid.Column="2" x:Name="PART_ElemSearchActive"
-                                            VerticalAlignment="Top" HorizontalAlignment="Stretch"
-                                            Margin="0,15,0,0">
-                                    <TextBlock  FontSize="18"                                                
-                                                TextAlignment="Center"
-                                                Style="{DynamicResource TextBlockBaseStyle}"
-                                                Text="{DynamicResource LOCGameListSearchResults}"/>
-                                    <TextBlock  Foreground="White"
-                                                TextAlignment="Center"
-                                                Style="{DynamicResource TextBlockBaseStyle}"
-                                                Text="{Binding AppSettings.Fullscreen.FilterSettings.Name}"/>
-                                </StackPanel>
-
-                                <TextBlock Grid.Column="2" x:Name="PART_ElemExtraFilterActive"
-                                       FontSize="20"
-                                       VerticalAlignment="Center" HorizontalAlignment="Stretch"
-                                       TextAlignment="Center"
-                                       Style="{DynamicResource TextBlockBaseStyle}"
-                                       Text="{DynamicResource LOCGameListExtraFiltered}"/>
-
-                                <StackPanel x:Name="PART_ElemProgressIndicator" Orientation="Horizontal"
-                                        Grid.Column="3" VerticalAlignment="Center">
-                                    <TextBlock x:Name="PART_TextProgressTooltip" 
-                                           Margin="0,0,15,0" FontSize="20" VerticalAlignment="Center"
-                                           Style="{DynamicResource TextBlockBaseStyle}"/>
-                                    <ContentControl Style="{DynamicResource ProgressIndicator}" Focusable="False"
-                                                Height="38" Width="38" VerticalAlignment="Center" />
-                                </StackPanel>
-                            </Grid>
+                                    <!-- Hidden legacy hooks retained until their Capsule screens are drawn. -->
+                                    <Grid Visibility="Collapsed">
+                                        <ButtonEx x:Name="PART_ButtonNotifications" />
+                                        <ButtonEx x:Name="PART_ButtonProgramUpdate" />
+                                        <ButtonEx x:Name="PART_ButtonSearch" />
+                                        <ButtonEx x:Name="PART_ButtonFilter" />
+                                        <ButtonEx x:Name="PART_ButtonDetails" />
+                                        <TextBlock x:Name="PART_TextBatteryPercentage" />
+                                        <ContentControl x:Name="PART_ElemBatteryStatus" />
+                                        <TextBlock x:Name="PART_TextProgressTooltip" />
+                                        <ContentControl x:Name="PART_ElemProgressIndicator" />
+                                        <TextBlock x:Name="PART_ElemExtraFilterActive" />
+                                        <StackPanel x:Name="PART_ElemSearchActive" />
+                                        <Filters x:Name="PART_ElemFilters" />
+                                        <FiltersAdditional x:Name="PART_ElemFiltersAdditional" />
+                                        <ContentControl x:Name="PART_ContentFilterItems" />
+                                        <FilterPresetSelector x:Name="PART_FilterPresetSelector" />
+                                    </Grid>
+                                </Grid>
+                            </Viewbox>
                         </Grid>
 
-                        <GameDetails x:Name="PART_ElemGameDetails" Grid.RowSpan="3"
-                                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        <GameDetails x:Name="PART_ElemGameDetails"
+                                     HorizontalAlignment="Stretch"
+                                     VerticalAlignment="Stretch"
+                                     Panel.ZIndex="100" />
 
-                        <GameStatus x:Name="PART_ElemGameStatus" Grid.RowSpan="3"
-                                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        <GameStatus x:Name="PART_ElemGameStatus"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Panel.ZIndex="110" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

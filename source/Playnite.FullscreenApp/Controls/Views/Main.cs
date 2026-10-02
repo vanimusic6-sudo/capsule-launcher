@@ -19,6 +19,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Xml.Linq;
 
 namespace Playnite.FullscreenApp.Controls.Views
@@ -49,6 +50,7 @@ namespace Playnite.FullscreenApp.Controls.Views
     [TemplatePart(Name = "PART_FilterPresetSelector", Type = typeof(FilterPresetSelector))]
     [TemplatePart(Name = "PART_ElemGameStatus", Type = typeof(FrameworkElement))]
     [TemplatePart(Name = "PART_ButtonProgramUpdate", Type = typeof(ButtonBase))]
+    [TemplatePart(Name = "PART_CapsuleHeroContent", Type = typeof(FrameworkElement))]
     public class Main : Control
     {
         private FullscreenAppViewModel mainModel;
@@ -77,6 +79,7 @@ namespace Playnite.FullscreenApp.Controls.Views
         private FrameworkElement ElemGameDetails;
         private FadeImage ImageBackground;
         private FrameworkElement ElemGameStatus;
+        private FrameworkElement CapsuleHeroContent;
 
         static Main()
         {
@@ -110,6 +113,11 @@ namespace Playnite.FullscreenApp.Controls.Views
                 SetDetailsElemBindings();
             }
 
+            if (e.PropertyName == nameof(FullscreenAppViewModel.SelectedGame))
+            {
+                AnimateCapsuleHeroSelection();
+            }
+
             if (e.PropertyName == nameof(FullscreenAppViewModel.ActiveFilterPreset))
             {
                 var panel = ElementTreeHelper.FindVisualChildren<FullscreenTilePanel>(ListGameItems).FirstOrDefault();
@@ -127,6 +135,36 @@ namespace Playnite.FullscreenApp.Controls.Views
                     panel.SetVerticalOffset(0);
                 }
             }
+        }
+
+        private void AnimateCapsuleHeroSelection()
+        {
+            if (CapsuleHeroContent == null || mainModel?.CapsuleLaunchTransitionActive == true)
+            {
+                return;
+            }
+
+            if (!(CapsuleHeroContent.RenderTransform is TranslateTransform translate))
+            {
+                translate = new TranslateTransform();
+                CapsuleHeroContent.RenderTransform = translate;
+            }
+
+            var easing = new CubicEase() { EasingMode = EasingMode.EaseOut };
+            var slide = new DoubleAnimation(16, 0, TimeSpan.FromMilliseconds(220))
+            {
+                EasingFunction = easing,
+                FillBehavior = FillBehavior.Stop
+            };
+
+            var fade = new DoubleAnimation(0.45, 1, TimeSpan.FromMilliseconds(180))
+            {
+                EasingFunction = easing,
+                FillBehavior = FillBehavior.Stop
+            };
+
+            translate.BeginAnimation(TranslateTransform.XProperty, slide, HandoffBehavior.SnapshotAndReplace);
+            CapsuleHeroContent.BeginAnimation(OpacityProperty, fade, HandoffBehavior.SnapshotAndReplace);
         }
 
         private void Fullscreen_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -180,7 +218,7 @@ namespace Playnite.FullscreenApp.Controls.Views
 
             if (mainModel.AppSettings.Fullscreen.EnableMainBackgroundImage)
             {
-                ImageBackground.SourceUpdateDelay = 300;
+                ImageBackground.SourceUpdateDelay = 120;
                 BindingTools.SetBinding(ImageBackground,
                     FadeImage.SourceProperty,
                     mainModel,
@@ -199,32 +237,11 @@ namespace Playnite.FullscreenApp.Controls.Views
                 return;
             }
 
-            if (mainModel.AppSettings.Fullscreen.MainBackgroundImageDarkAmount > 0)
-            {
-                ImageBackground.ImageDarkeningBrush = null;
-                ImageBackground.ImageDarkeningBrush = new SolidColorBrush(new Color()
-                {
-                    ScA = mainModel.AppSettings.Fullscreen.MainBackgroundImageDarkAmount / 100,
-                    ScR = 0,
-                    ScG = 0,
-                    ScB = 0
-                });
-            }
-            else
-            {
-                ImageBackground.ImageDarkeningBrush = null;
-            }
-
-            if (mainModel.AppSettings.Fullscreen.MainBackgroundImageBlurAmount > 0)
-            {
-                ImageBackground.IsBlurEnabled = true;
-                ImageBackground.HighQualityBlur = true;
-                ImageBackground.BlurAmount = mainModel.AppSettings.Fullscreen.MainBackgroundImageBlurAmount;
-            }
-            else
-            {
-                ImageBackground.IsBlurEnabled = false;
-            }
+            // Capsule owns its readability masks in Main.xaml. Avoid the legacy
+            // high-quality blur/darkening pass here: it is expensive while browsing
+            // and would double-darken the artwork compared to the approved mockup.
+            ImageBackground.ImageDarkeningBrush = null;
+            ImageBackground.IsBlurEnabled = false;
         }
 
         public override void OnApplyTemplate()
@@ -252,6 +269,9 @@ namespace Playnite.FullscreenApp.Controls.Views
                     ViewHost.InputBindings.Add(new GameControllerInputBinding(mainModel.OpenMainMenuCommand, ControllerInput.Back));
                     ViewHost.InputBindings.Add(new GameControllerInputBinding(mainModel.SelectFilterPresetCommand, ControllerInput.LeftStick));
                 }
+
+                CapsuleHeroContent = Template.FindName("PART_CapsuleHeroContent", this) as FrameworkElement;
+
 
                 MainHost = Template.FindName("PART_MainHost", this) as FrameworkElement;
                 if (MainHost != null)
@@ -370,11 +390,11 @@ namespace Playnite.FullscreenApp.Controls.Views
                     ListGameItems.ItemsPanel = Xaml.FromString<ItemsPanelTemplate>(new XDocument(
                         new XElement(pns + nameof(ItemsPanelTemplate),
                             new XElement(pns + nameof(FullscreenTilePanel),
-                                new XAttribute(nameof(FullscreenTilePanel.Rows), "{Settings Fullscreen.Rows}"),
-                                new XAttribute(nameof(FullscreenTilePanel.Columns), "{Settings Fullscreen.Columns}"),
-                                new XAttribute(nameof(FullscreenTilePanel.UseHorizontalLayout), "{Settings Fullscreen.HorizontalLayout}"),
-                                new XAttribute(nameof(FullscreenTilePanel.ItemAspectRatio), "{Settings CoverAspectRatio}"),
-                                new XAttribute(nameof(FullscreenTilePanel.ItemSpacing), "{Settings FullscreenItemSpacing}"),
+                                new XAttribute(nameof(FullscreenTilePanel.Rows), "1"),
+                                new XAttribute(nameof(FullscreenTilePanel.Columns), "6"),
+                                new XAttribute(nameof(FullscreenTilePanel.UseHorizontalLayout), "True"),
+                                new XAttribute(nameof(FullscreenTilePanel.ItemAspectRatio), "1:1"),
+                                new XAttribute(nameof(FullscreenTilePanel.ItemSpacing), "18"),
                                 new XAttribute(nameof(FullscreenTilePanel.SmoothScrollEnabled), "{Settings Fullscreen.SmoothScrolling}")))
                     ).ToString());
 
