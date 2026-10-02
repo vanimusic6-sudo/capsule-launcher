@@ -283,3 +283,18 @@ source/Playnite.FullscreenApp/Themes/Fullscreen/Default/audio/*
 
 source/Playnite.Deps/include/*
 source/Playnite.Deps/include_native_x86/*
+
+# Capsule local/private configuration
+.env
+.env.*
+!.env.example
+secrets/
+local-secrets/
+*.snk
+*.cer
+*.key
+artifacts/
+
+# Local Capsule development state
+capsule.local.json
+capsule.dev.json
