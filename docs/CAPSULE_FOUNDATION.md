@@ -114,3 +114,12 @@ Do not mass-upgrade these during UI work.
 - Browser/HTML dependencies should be upgraded in an isolated security branch with startup, metadata, description and plugin regression checks.
 
 Treat these advisories as tracked inherited debt, not as a reason to destabilize the foundation before the Capsule presentation layer is separated.
+
+
+## Game rail strategy
+
+The inherited `FullscreenTilePanel` is a useful virtualized baseline, but its layout assumes uniform item geometry. It supports horizontal/vertical layouts, recycling and ~140 ms smooth scroll animation.
+
+For the first Capsule visual prototype it is acceptable to keep this panel and use transforms for focus emphasis.
+
+If the final Home design requires the selected game to occupy genuinely different layout space while neighbors reflow around it, implement a Capsule-owned virtualizing panel instead of forcing variable geometry into `FullscreenTilePanel`. Keep the existing `ItemsSource`, selected-item binding, focus and activation commands so only presentation geometry changes.
