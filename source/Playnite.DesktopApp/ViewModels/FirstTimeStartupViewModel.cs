@@ -48,6 +48,7 @@ namespace Playnite.DesktopApp.ViewModels
         private List<PluginSettingsItem> selectedPlugins { get; } = new List<PluginSettingsItem>();
         private int selectedPluginIndex = 0;
         private ServicesClient backendClient;
+        private AddonPackageInstaller addonPackageInstaller;
         ServicesClient.RecommendedAddons recommendedExtensions = new ServicesClient.RecommendedAddons();
 
         public bool ShowFinishButton
@@ -160,6 +161,7 @@ namespace Playnite.DesktopApp.ViewModels
             this.resources = resources;
             this.extensions = extensions;
             this.backendClient = backendClient;
+            addonPackageInstaller = new AddonPackageInstaller(backendClient);
         }
 
         public bool? OpenView()
@@ -301,24 +303,11 @@ namespace Playnite.DesktopApp.ViewModels
         {
             try
             {
-                var addon = backendClient.GetAddon(addonId);
-                var man = addon.InstallerManifest;
-                var package = man.GetLatestCompatiblePackage();
-                if (package == null)
-                {
-                    logger.Error($"Can't install addon {addonId}, no compatible package found.");
-                    return false;
-                }
-
-                var localPath = addon.GetTargetDownloadPath();
-                FileSystem.DeleteFile(localPath);
-                FileSystem.PrepareSaveFile(localPath);
-                HttpDownloader.DownloadFile(package.PackageUrl, localPath);
-                ExtensionInstaller.QueuePackageInstall(localPath);
+                addonPackageInstaller.QueueInstall(addonId);
             }
             catch (Exception e) when (!PlayniteEnvironment.ThrowAllErrors)
             {
-                logger.Error(e, $"Failed to firt time setup addon {addonId}");
+                logger.Error(e, $"Failed to first time setup addon {addonId}");
                 return false;
             }
 
