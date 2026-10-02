@@ -34,6 +34,14 @@ jobs:
           dotnet --info
           pwsh --version
 
+      - name: Test fullscreen foundation
+        shell: pwsh
+        run: |
+          dotnet test ./source/Tests/Playnite.FullscreenApp.Tests/Playnite.FullscreenApp.Tests.csproj `
+            --configuration Release `
+            --runtime win-x86 `
+            --logger "trx;LogFileName=capsule-fullscreen-tests.trx"
+
       - name: Build portable package
         shell: pwsh
         run: |
