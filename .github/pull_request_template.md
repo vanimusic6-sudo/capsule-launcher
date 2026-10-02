@@ -1,3 +1,15 @@
-Pull requests are generally on pause because majority of code base is being rewritten for Playnite 11.
+## What changed
 
-Smaller "safe" changes for P10 might get accepted based on what they and if they come with test coverage. If you plan to work on bigger changes, please discuss it first in related issue or on Discord, thank you.
+Describe the user-visible and architectural change.
+
+## Safety check
+
+- [ ] Library/database behavior is unchanged unless explicitly intended.
+- [ ] Controller navigation still works in fullscreen mode.
+- [ ] Existing Playnite plugin compatibility was not broken accidentally.
+- [ ] No credentials, tokens, certificates, or local paths were committed.
+- [ ] UI changes preserve required WPF template PART_* contracts or update the backing control intentionally.
+
+## Validation
+
+Describe how the change was built and tested.
