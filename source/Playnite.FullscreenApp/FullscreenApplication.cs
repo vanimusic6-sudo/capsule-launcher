@@ -27,6 +27,7 @@ using static SDL2.SDL;
 using Playnite.Controls;
 using Playnite.FullscreenApp.Controls;
 using Playnite.FullscreenApp.Capsule.Infrastructure.Integrations;
+using Playnite.FullscreenApp.Capsule.Experience;
 
 namespace Playnite.FullscreenApp
 {
@@ -46,6 +47,7 @@ namespace Playnite.FullscreenApp
         }
 
         public CapsuleLibraryIntegrationRegistry LibraryIntegrations { get; private set; }
+        public CapsuleGameSessionState GameSession { get; private set; }
 
         private SplashScreen splashScreen;
         private bool sdlInitialized = false;
@@ -118,6 +120,7 @@ namespace Playnite.FullscreenApp
             Database = new GameDatabase();
             Database.SetAsSingletonInstance();
             Controllers = new GameControllerFactory(Database);
+            GameSession = new CapsuleGameSessionState(Controllers);
             Extensions = new ExtensionFactory(Database, Controllers, GetApiInstance);
             LibraryIntegrations = new CapsuleLibraryIntegrationRegistry(Extensions);
             GamesEditor = new GamesEditor(
@@ -250,6 +253,7 @@ namespace Playnite.FullscreenApp
             }
 
             base.ReleaseResources(releaseCefSharp);
+            GameSession?.Dispose();
             exitSDLEventLoop = true;
             GameController?.Dispose();
             if (Audio != null)

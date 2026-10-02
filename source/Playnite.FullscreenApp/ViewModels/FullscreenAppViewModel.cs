@@ -498,10 +498,12 @@ namespace Playnite.FullscreenApp.ViewModels
             }
 
             GameStatusView = null;
+            RestoreCapsuleReturnPoint();
         }
 
         private void Controllers_Starting(object sender, OnGameStartingEventArgs e)
         {
+            CaptureCapsuleReturnPoint(e.Game.Id);
             if (GameDetailsVisible)
             {
                 GameDetailsFocused = false;
