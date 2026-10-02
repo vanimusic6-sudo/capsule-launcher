@@ -37,7 +37,10 @@ jobs:
       - name: Test fullscreen foundation
         shell: pwsh
         run: |
-          dotnet test ./source/Tests/Playnite.FullscreenApp.Tests/Playnite.FullscreenApp.Tests.csproj `
+          $testProject = "./source/Tests/Playnite.FullscreenApp.Tests/Playnite.FullscreenApp.Tests.csproj"
+          dotnet restore $testProject
+          dotnet test $testProject `
+            --no-restore `
             --configuration Release `
             --runtime win-x86 `
             --logger "trx;LogFileName=capsule-fullscreen-tests.trx"
