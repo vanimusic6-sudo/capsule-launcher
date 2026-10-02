@@ -45,7 +45,8 @@ jobs:
           $msbuild = (& $vswhere -latest -products * -requires Microsoft.Component.MSBuild -find "MSBuild\**\Bin\MSBuild.exe" | Select-Object -First 1)
           if ([string]::IsNullOrWhiteSpace($msbuild)) { throw "MSBuild not found." }
 
-          & $msbuild $testProject /p:Configuration=Release /p:Platform=x86 /m
+          $solutionDir = (Join-Path $env:GITHUB_WORKSPACE "source") + "\"
+          & $msbuild $testProject /p:Configuration=Release /p:Platform=x86 "/p:SolutionDir=$solutionDir" /m
           if ($LASTEXITCODE -ne 0) { throw "Test project build failed." }
 
           $testAssembly = Get-ChildItem (Join-Path $env:GITHUB_WORKSPACE "source\Tests\Playnite.FullscreenApp.Tests\bin") -Filter "Playnite.FullscreenApp.Tests.dll" -Recurse |
