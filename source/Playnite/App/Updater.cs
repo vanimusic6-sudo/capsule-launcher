@@ -27,6 +27,20 @@ namespace Playnite
             }
         }
 
+        public static bool ProgramUpdatesEnabled
+        {
+            get
+            {
+                var value = ConfigurationManager.AppSettings["ProgramUpdatesEnabled"];
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    return true;
+                }
+
+                return bool.TryParse(value, out var enabled) && enabled;
+            }
+        }
+
         private static ILogger logger = LogManager.GetLogger();
         private UpdateManifest updateManifest;
         private IPlayniteApplication playniteApp;
@@ -44,6 +58,11 @@ namespace Playnite
         {
             get
             {
+                if (!ProgramUpdatesEnabled)
+                {
+                    return false;
+                }
+
                 var latest = GetLatestVersion();
                 var current = CurrentVersion;
                 if (latest > current)
@@ -95,6 +114,10 @@ namespace Playnite
         public List<ReleaseNoteData> GetReleaseNotes()
         {
             var notes = new List<ReleaseNoteData>();
+            if (!ProgramUpdatesEnabled)
+            {
+                return notes;
+            }
             if (updateManifest == null)
             {
                 DownloadManifest();
@@ -136,6 +159,7 @@ namespace Playnite
 
         public async Task DownloadUpdate(Action<DownloadProgressChangedEventArgs> progressHandler)
         {
+            EnsureProgramUpdatesEnabled();
             if (updateManifest == null)
             {
                 DownloadManifest();
@@ -168,6 +192,7 @@ namespace Playnite
 
         public void InstallUpdate(ApplicationMode mode)
         {
+            EnsureProgramUpdatesEnabled();
             var portable = PlayniteSettings.IsPortable ? "/PORTABLE" : "";
             var fullscreen = mode == ApplicationMode.Fullscreen ? "/FULLSCREEN" : "";
             logger.Info("Installing new update to {0}, in {1} mode".Format(PlaynitePaths.ProgramPath, portable));
@@ -179,6 +204,7 @@ namespace Playnite
 
         public UpdateManifest DownloadManifest()
         {
+            EnsureProgramUpdatesEnabled();
             var dataString = string.Empty;
 
             try
@@ -213,12 +239,25 @@ namespace Playnite
 
         public Version GetLatestVersion()
         {
+            if (!ProgramUpdatesEnabled)
+            {
+                return CurrentVersion;
+            }
+
             if (updateManifest == null)
             {
                 DownloadManifest();
             }
 
             return updateManifest.Version;
+        }
+
+        private static void EnsureProgramUpdatesEnabled()
+        {
+            if (!ProgramUpdatesEnabled)
+            {
+                throw new InvalidOperationException("Program updates are disabled by product policy.");
+            }
         }
 
         private string GetUpdateManifestData(string url)

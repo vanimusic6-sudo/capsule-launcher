@@ -41,6 +41,7 @@ namespace Playnite
         private PipeService pipeService;
         private PipeServer pipeServer;
         private System.Threading.Timer updateCheckTimer;
+        private bool programUpdateChecksEnabled = true;
         private bool installingAddon = false;
         private AddonLoadError themeLoadError = AddonLoadError.None;
         private ThemeManifest customTheme;
@@ -1448,12 +1449,13 @@ namespace Playnite
 
         private void UpdateCheckerCallback(object state)
         {
-            CheckForUpdates(AppSettings.ShouldCheckProgramUpdatePeriodic(), AppSettings.ShouldCheckAddonUpdatePeriodic());
+            CheckForUpdates(programUpdateChecksEnabled && AppSettings.ShouldCheckProgramUpdatePeriodic(), AppSettings.ShouldCheckAddonUpdatePeriodic());
             CheckAddonBlacklist();
         }
 
-        public async Task StartUpdateCheckerAsync()
+        public async Task StartUpdateCheckerAsync(bool checkProgramUpdates = true)
         {
+            programUpdateChecksEnabled = checkProgramUpdates;
             if (PlayniteEnvironment.InOfflineMode)
             {
                 return;
@@ -1467,7 +1469,7 @@ namespace Playnite
 
             await Task.Run(() =>
             {
-                CheckForUpdates(AppSettings.ShouldCheckProgramUpdateStartup(), AppSettings.ShouldCheckAddonUpdateStartup());
+                CheckForUpdates(programUpdateChecksEnabled && AppSettings.ShouldCheckProgramUpdateStartup(), AppSettings.ShouldCheckAddonUpdateStartup());
                 CheckAddonBlacklist();
             });
 

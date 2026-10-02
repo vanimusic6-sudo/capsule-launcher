@@ -99,7 +99,7 @@ namespace Playnite.DesktopApp
             }
             OpenMainViewAsync(isFirstStart);
             LoadTrayIcon();
-            StartUpdateCheckerAsync();
+            StartUpdateCheckerAsync(checkProgramUpdates: false);
 #pragma warning restore CS4014
             ProcessArguments();
             splashScreen?.Close(new TimeSpan(0));
