@@ -1,0 +1,41 @@
+name: Capsule development build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "next/**"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Environment
+        shell: pwsh
+        run: |
+          dotnet --info
+          pwsh --version
+
+      - name: Build portable package
+        shell: pwsh
+        run: |
+          $out = Join-Path $env:RUNNER_TEMP "capsule-build"
+          $packages = Join-Path $env:GITHUB_WORKSPACE "artifacts"
+          ./build/build.ps1 -Configuration Release -OutputDir $out -InstallerDir $packages -Package
+          Move-Item (Join-Path $packages "Playnite.zip") (Join-Path $packages "CapsuleLauncher-dev.zip") -Force
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: CapsuleLauncher-dev
+          path: artifacts/CapsuleLauncher-dev.zip
+          if-no-files-found: error
+          retention-days: 14
