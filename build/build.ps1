@@ -36,13 +36,41 @@ param(
 $global:ErrorActionPreference = "Stop"
 $PSNativeCommandUseErrorActionPreference = $true
 
-if (!(Get-InstalledModule "powershell-yaml" -EA 0))
+if (!(Get-Module -ListAvailable -Name "powershell-yaml"))
 {
-    Install-Module powershell-yaml
+    try
+    {
+        Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted -ErrorAction Stop
+    }
+    catch
+    {
+        Write-Warning "Could not pre-trust PSGallery: $($_.Exception.Message)"
+    }
+
+    Install-Module powershell-yaml -Scope CurrentUser -Force -AllowClobber -Confirm:$false
 }
+
+Import-Module powershell-yaml -Force
 
 Set-Location $PSScriptRoot
 & .\common.ps1
+
+if ([string]::IsNullOrWhiteSpace($MSBuildPath) -or !(Test-Path $MSBuildPath))
+{
+    $vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\Installer\vswhere.exe"
+    if (!(Test-Path $vswhere))
+    {
+        throw "MSBuild path was not provided and vswhere.exe was not found."
+    }
+
+    $MSBuildPath = (& $vswhere -latest -products * -requires Microsoft.Component.MSBuild -find "MSBuild\**\Bin\MSBuild.exe" | Select-Object -First 1)
+    if ([string]::IsNullOrWhiteSpace($MSBuildPath) -or !(Test-Path $MSBuildPath))
+    {
+        throw "Could not locate MSBuild. Install Visual Studio Build Tools with the MSBuild workload or pass -MSBuildPath."
+    }
+
+    Write-OperationLog "Using MSBuild: $MSBuildPath"
+}
 
 if (!$OutputDir)
 {
