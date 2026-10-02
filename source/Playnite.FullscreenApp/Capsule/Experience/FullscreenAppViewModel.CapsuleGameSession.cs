@@ -15,6 +15,13 @@ namespace Playnite.FullscreenApp.ViewModels
 
         private void CaptureCapsuleReturnPoint(Guid launchedGameId)
         {
+            // A second launch while another game is active must not replace the place
+            // the user originally left Capsule from.
+            if (capsuleReturnPointCaptured)
+            {
+                return;
+            }
+
             // Keep the user's actual selection when possible. A launch can also arrive
             // from quick launch / URI paths where SelectedGame is temporarily null.
             capsuleReturnGameId = SelectedGame?.Game?.Id;
